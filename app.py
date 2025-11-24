@@ -584,7 +584,7 @@ st.markdown("""
     
     .analysis-card {
         background: white;
-        padding: 20px;
+        padding: 15px;
         border-radius: 10px;
         box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         margin: 15px 0;
@@ -593,9 +593,9 @@ st.markdown("""
     .analysis-header {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         color: white;
-        padding: 15px 20px;
+        padding: 10px 15px;
         border-radius: 10px 10px 0 0;
-        margin: -20px -20px 15px -20px;
+        margin: -15px -15px 10px -15px;
     }
 </style>
 """, unsafe_allow_html=True)
