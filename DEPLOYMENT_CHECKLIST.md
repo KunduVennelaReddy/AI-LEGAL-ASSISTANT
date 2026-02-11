@@ -25,10 +25,13 @@ Click **"New app"** button
 ### 5. Add API Secret (IMPORTANT!)
 Click **"Advanced settings"** → **"Secrets"**
 
-Paste this EXACTLY:
+Paste this format (replace with YOUR actual API key):
 ```toml
-GEMINI_API_KEY = "AIzaSyAQtYW_yX_6Xqmlm-AcjMPSqHMoJwUwC50"
+GEMINI_API_KEY = "your-actual-gemini-api-key-here"
 ```
+
+**⚠️ NEVER commit your actual API key to GitHub!**
+Get your API key from: https://aistudio.google.com/apikey
 
 ### 6. Deploy
 Click **"Deploy!"** button
