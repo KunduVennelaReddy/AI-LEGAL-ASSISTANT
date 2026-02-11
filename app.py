@@ -6,6 +6,10 @@ import threading
 import pandas as pd
 import json
 import os
+from dotenv import load_dotenv
+
+# Load environment variables from .env file (if it exists)
+load_dotenv()
 
 # Try to import Google Generative AI
 try:
@@ -126,8 +130,8 @@ def get_response(query):
             
             if api_key:
                 genai.configure(api_key=api_key)
-                # Use the Flash model for better rate limits
-                model = genai.GenerativeModel('gemini-2.0-flash')
+                # Use gemini-flash-latest for better free tier rate limits
+                model = genai.GenerativeModel('gemini-flash-latest')
                 
                 # Create prompt for Medium Length (Balanced) with Strict Legal Guardrails
                 prompt = f"""You are a specialized legal assistant for Indian law. 
@@ -203,7 +207,8 @@ def analyze_legal_document(document_text, document_name):
             return "❌ API key not configured. Please set up GEMINI_API_KEY in secrets."
         
         genai.configure(api_key=api_key)
-        model = genai.GenerativeModel('gemini-2.0-flash')
+        # Use gemini-flash-latest for better free tier rate limits
+        model = genai.GenerativeModel('gemini-flash-latest')
         
         # Limit text length to avoid token limits (first 4000 characters)
         text_sample = document_text[:4000] if len(document_text) > 4000 else document_text
@@ -604,7 +609,7 @@ if st.session_state.user_logged_in:
                 with st.spinner("Generating detailed legal analysis..."):
                     try:
                         # Re-use the configured model to generate a detailed response
-                        model = genai.GenerativeModel('gemini-2.0-flash')
+                        model = genai.GenerativeModel('gemini-flash-latest')
                         detailed_prompt = f"""You are an expert legal advisor.
                         Provide a comprehensive, detailed legal analysis of: {prompt}
                         Include:
