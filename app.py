@@ -101,7 +101,8 @@ patterns = load_patterns()
 def get_response(query):
     query = query.lower().strip()
     if len(query) < 3:
-        return translations[st.session_state.language_preference]["no_response"]
+        lang = st.session_state.get("language_preference", "English")
+        return translations.get(lang, translations["English"])["no_response"], False
 
     # Add the latest user query to the conversation context
     st.session_state.conversation_context.append(f"User: {query}")
@@ -177,7 +178,8 @@ def get_response(query):
     elif 'robbery' in query or 'theft' in query or 'dacoity' in query or 'roberry' in query:
         response = "Theft, Robbery, and Dacoity are offenses under the Indian Penal Code (Sections 378-402). Punishment varies based on severity. Report such incidents to the police immediately."
     else:
-        response = translations[st.session_state.language_preference]["no_response"]
+        lang = st.session_state.get("language_preference", "English")
+        response = translations.get(lang, translations["English"])["no_response"]
     
     st.session_state.conversation_context.append(f"Assistant: {response}")
     return response, False
