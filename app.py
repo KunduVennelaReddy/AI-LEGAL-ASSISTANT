@@ -135,11 +135,23 @@ def get_response(query):
                 3. Mention key sections/acts but avoid overwhelming detail.
                 4. Always remind users to consult a lawyer."""
                 
-                response_obj = client.chat.completions.create(
-                    messages=[{"role": "user", "content": prompt}],
-                    model="llama3.1-70b",
-                )
-                response = response_obj.choices[0].message.content.strip()
+                # Try available models on Cerebras
+                models_to_try = ["llama3.1-8b", "llama3.1-70b", "llama-3.3-70b"]
+                response = None
+                
+                for model_name in models_to_try:
+                    try:
+                        response_obj = client.chat.completions.create(
+                            messages=[{"role": "user", "content": prompt}],
+                            model=model_name,
+                        )
+                        response = response_obj.choices[0].message.content.strip()
+                        if response:
+                            break
+                    except Exception as model_err:
+                        print(f"Model {model_name} failed: {model_err}")
+                        continue
+                
                 if response:
                     st.session_state.conversation_context.append(f"Assistant: {response}")
                     return response, True
@@ -240,11 +252,27 @@ Provide a comprehensive legal analysis in the following format:
 **Important Disclaimer:** This is an AI-generated analysis for informational purposes only. This does NOT constitute legal advice. Please consult a qualified lawyer for professional legal advice specific to your situation.
 """
         
-        response = client.chat.completions.create(
-            messages=[{"role": "user", "content": prompt}],
-            model="llama3.1-70b",
-        )
-        return response.choices[0].message.content
+        # Try available models on Cerebras for analysis
+        models_to_try = ["llama3.1-8b", "llama3.1-70b", "llama-3.3-70b"]
+        analysis = None
+        
+        for model_name in models_to_try:
+            try:
+                response = client.chat.completions.create(
+                    messages=[{"role": "user", "content": prompt}],
+                    model=model_name,
+                )
+                analysis = response.choices[0].message.content
+                if analysis:
+                    break
+            except Exception as model_err:
+                print(f"Analysis Model {model_name} failed: {model_err}")
+                continue
+        
+        if analysis:
+            return analysis
+        else:
+            return "❌ No compatible AI model found or available in your Cerebras account."
         
     except Exception as e:
         return f"❌ Analysis error: {str(e)}\n\nPlease try again or consult the error logs."
@@ -614,11 +642,26 @@ if st.session_state.user_logged_in:
                         5. Important Case Laws (if any)
                         Format with clear headings and bullet points."""
                         
-                        detailed_response = client.chat.completions.create(
-                            messages=[{"role": "user", "content": detailed_prompt}],
-                            model="llama3.1-70b",
-                        )
-                        st.markdown(detailed_response.choices[0].message.content)
+                        # Re-use Cerebras for detailed explanation with fallback
+                        models_to_try = ["llama3.1-8b", "llama3.1-70b", "llama-3.3-70b"]
+                        detailed_analysis = None
+                        
+                        for model_name in models_to_try:
+                            try:
+                                detailed_response = client.chat.completions.create(
+                                    messages=[{"role": "user", "content": detailed_prompt}],
+                                    model=model_name,
+                                )
+                                detailed_analysis = detailed_response.choices[0].message.content
+                                if detailed_analysis:
+                                    break
+                            except:
+                                continue
+                        
+                        if detailed_analysis:
+                            st.markdown(detailed_analysis)
+                        else:
+                            st.error("Could not generate detailed explanation.")
                     except Exception as e:
                         st.error("Could not generate detailed explanation.")
 
